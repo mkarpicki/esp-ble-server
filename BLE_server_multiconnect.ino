@@ -97,7 +97,9 @@ void setup() {
 void loop() {
 
     if (connectedDevices > 0) {
-        //Serial.println("Connected devices %d", connectedDevices);
+        Serial.print("Connected devices: "); 
+        Serial.println(connectedDevices);
+
         pCharacteristic->setValue((uint8_t*)&connectedDevices, 4);
         pCharacteristic->notify();      
     }
