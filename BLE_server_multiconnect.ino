@@ -32,27 +32,25 @@ bool deviceConnected = false;
 bool oldDeviceConnected = false;
 uint32_t value = 0;
 
-uint32_t connectedDevices = 0;
+int connectedDevices = 0;
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
 
-#define SERVICE_UUID        "9d319c9c-3abb-4b58-b99d-23c9b1b69ebc" //"4fafc201-1fb5-459e-8fcc-c5c9c331914b"                            
-#define CHARACTERISTIC_UUID "a869a793-4b6e-4334-b1e3-eb0b74526c14" //"beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define SERVICE_UUID        "9d319c9c-3abb-4b58-b99d-23c9b1b69ebc"                    
+#define CHARACTERISTIC_UUID "a869a793-4b6e-4334-b1e3-eb0b74526c14" 
 
 
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
       connectedDevices++;
       Serial.println("onConnect...");
-      deviceConnected = true;
       BLEDevice::startAdvertising();
     };
 
     void onDisconnect(BLEServer* pServer) {
       connectedDevices--;
       Serial.println("onDisconnect...");
-      deviceConnected = false;
     }
 };
 
@@ -99,26 +97,10 @@ void setup() {
 void loop() {
 
     if (connectedDevices > 0) {
-      
+        //Serial.println("Connected devices %d", connectedDevices);
+        pCharacteristic->setValue((uint8_t*)&connectedDevices, 4);
+        pCharacteristic->notify();      
     }
+    delay(1000);
   
-    // notify changed value
-    if (deviceConnected) {
-        pCharacteristic->setValue((uint8_t*)&value, 4);
-        pCharacteristic->notify();
-        value++;
-        delay(10); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
-    }
-    // disconnecting
-    if (!deviceConnected && oldDeviceConnected) {
-        delay(500); // give the bluetooth stack the chance to get things ready
-        pServer->startAdvertising(); // restart advertising
-        Serial.println("start advertising");
-        oldDeviceConnected = deviceConnected;
-    }
-    // connecting
-    if (deviceConnected && !oldDeviceConnected) {
-        // do stuff here on connecting
-        oldDeviceConnected = deviceConnected;
-    }
 }
