@@ -28,10 +28,6 @@
 BLEServer* pServer = NULL;
 BLECharacteristic* pCharacteristic = NULL;
 
-bool deviceConnected = false;
-bool oldDeviceConnected = false;
-uint32_t value = 0;
-
 int connectedDevices = 0;
 
 // See the following for generating UUIDs:
@@ -60,7 +56,7 @@ void setup() {
   Serial.begin(115200);
 
   // Create the BLE Device
-  BLEDevice::init("ESP32");
+  BLEDevice::init("ESP32_2");
 
   // Create the BLE Server
   pServer = BLEDevice::createServer();
@@ -100,7 +96,7 @@ void loop() {
         Serial.print("Connected devices: "); 
         Serial.println(connectedDevices);
 
-        pCharacteristic->setValue((uint8_t*)&connectedDevices, 4);
+        pCharacteristic->setValue((int&)connectedDevices);
         pCharacteristic->notify();      
     }
     delay(1000);
