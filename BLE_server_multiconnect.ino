@@ -99,6 +99,6 @@ void loop() {
         pCharacteristic->setValue((int&)connectedDevices);
         pCharacteristic->notify();      
     }
-    delay(1000);
+    delay(10000);
   
 }
