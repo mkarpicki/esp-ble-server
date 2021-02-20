@@ -75,6 +75,8 @@ void setup() {
                     );
 
   // https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
+  // https://www.bluetooth.com/specifications/assigned-numbers/gatt-namespace-descriptors/
+  // https://www.mathworks.com/help/matlab/ref/matlabshared.blelib.characteristic.html
   // Create a BLE Descriptor
   pCharacteristic->addDescriptor(new BLE2902());
 
