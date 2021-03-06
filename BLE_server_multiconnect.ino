@@ -36,27 +36,35 @@ int connectedDevices = 0;
 #define SERVICE_UUID        "9d319c9c-3abb-4b58-b99d-23c9b1b69ebc"                    
 #define CHARACTERISTIC_UUID "a869a793-4b6e-4334-b1e3-eb0b74526c14" 
 
+void notify (void);
+
+
 
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
       connectedDevices++;
       Serial.println("onConnect...");
       BLEDevice::startAdvertising();
+      notify();
     };
 
     void onDisconnect(BLEServer* pServer) {
       connectedDevices--;
       Serial.println("onDisconnect...");
+      notify();
     }
 };
 
-
+void notify (void) {
+  pCharacteristic->setValue((int&)connectedDevices);
+  pCharacteristic->notify();   
+}
 
 void setup() {
   Serial.begin(115200);
 
   // Create the BLE Device
-  BLEDevice::init("ESP32_2");
+  BLEDevice::init("ESP32_3");
 
   // Create the BLE Server
   pServer = BLEDevice::createServer();
@@ -92,15 +100,22 @@ void setup() {
   Serial.println("Waiting a client connection to notify...");
 }
 
+// change value to string and test on floats
+// if not as alternative use characteristics for 
+// - value
+// - name
+// - type
+
 void loop() {
+
+    int interval = 1000 * 30;
 
     if (connectedDevices > 0) {
         Serial.print("Connected devices: "); 
         Serial.println(connectedDevices);
 
-        pCharacteristic->setValue((int&)connectedDevices);
-        pCharacteristic->notify();      
+        notify();
     }
-    delay(10000);
+    delay(interval);
   
 }
