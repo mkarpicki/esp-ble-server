@@ -63,9 +63,15 @@ void notify (void) {
 void setup() {
   Serial.begin(115200);
 
+  
+  String name = "ESP32_2";
+  Serial.println(name);
+  
   // Create the BLE Device
-  BLEDevice::init("ESP32_3");
+  BLEDevice::init(name.c_str());
 
+  Serial.println(BLEDevice::getAddress().toString().c_str());
+  
   // Create the BLE Server
   pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
@@ -108,7 +114,7 @@ void setup() {
 
 void loop() {
 
-    int interval = 1000 * 30;
+    int interval = 1000 * 60;
 
     if (connectedDevices > 0) {
         Serial.print("Connected devices: "); 
